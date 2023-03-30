@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonflix/models/webtoon_model.dart';
+import 'package:toonflix/screens/home_screen.dart';
+import 'package:toonflix/screens/liked_screen.dart';
 import 'package:toonflix/services/api_services.dart';
 import 'package:toonflix/widgets/recent_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,19 +32,48 @@ class _RecentScreenState extends State<RecentScreen> {
     initPrefs();
   }
 
-  int _selectedIndex = 2;
+  final int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
-      if (index == 3) {
-        final url = Uri.parse("https://m.comic.naver.com/webtoon/weekday");
-        launchUrl(url);
-      } else {
-        Navigator.pushNamed(context, '/$index');
+      // Navigator.pushNamed(context, '/$index');
+      if (index != _selectedIndex) {
+        switch (index) {
+          case 0:
+            Navigator.of(context).push(_createRoute(const HomeScreen(), index));
+            break;
+          case 1:
+            Navigator.of(context)
+                .push(_createRoute(const LikedScreen(), index));
+            break;
+          case 2:
+            Navigator.of(context)
+                .push(_createRoute(const RecentScreen(), index));
+            break;
+          default:
+            final url = Uri.parse("https://m.comic.naver.com/webtoon/weekday");
+            launchUrl(url);
+            break;
+        }
       }
-      _selectedIndex = 0;
     });
+  }
+
+  Route _createRoute(screen, idx) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => screen,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = const Offset(-1.0, 0.0);
+        var end = Offset.zero;
+        var tween = Tween(begin: begin, end: end);
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
   }
 
   @override
@@ -50,6 +81,7 @@ class _RecentScreenState extends State<RecentScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 2,
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF224FBC),
