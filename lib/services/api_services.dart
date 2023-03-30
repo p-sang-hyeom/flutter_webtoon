@@ -53,6 +53,46 @@ class ApiService {
     throw Error();
   }
 
+  static Future<List<WebtoonModel>> getRecentToons() async {
+    List<WebtoonModel> webtoonInstances = [];
+    late SharedPreferences prefs;
+    List recentToons = [];
+    List toonsList = [];
+
+    prefs = await SharedPreferences.getInstance();
+    recentToons = prefs.getStringList('recentToons')!;
+
+    if (recentToons.isNotEmpty) {
+      for (int i = 0; i < recentToons.length; i++) {
+        var list = recentToons[i].split('/');
+        toonsList.add(list[0]);
+
+        // final url = Uri.parse("$baseUrl/$list[0]");
+        // final response = await http.get(url);
+        // if (response.statusCode == 200) {
+        //   final webtoon = jsonDecode(response.body);
+        //   print(webtoon);
+        //   webtoonInstances.add(WebtoonModel.fromJson(webtoon));
+        // }
+        // throw Error();
+      }
+
+      final url = Uri.parse('$baseUrl/$today');
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> webtoons = jsonDecode(response.body);
+
+        for (var webtoon in webtoons) {
+          if (toonsList.contains(webtoon['id']) == true) {
+            webtoonInstances.add(WebtoonModel.fromJson(webtoon));
+          }
+        }
+        return webtoonInstances;
+      }
+    }
+    return webtoonInstances;
+  }
+
   static Future<WebtoonDetailModel> getToonById(String id) async {
     final url = Uri.parse("$baseUrl/$id");
     final response = await http.get(url);

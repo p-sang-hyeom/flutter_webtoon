@@ -15,18 +15,6 @@ class LikedScreen extends StatefulWidget {
 class _LikedScreenState extends State<LikedScreen> {
   Future<List<WebtoonModel>> likedWebtoons = ApiService.getLikedToons();
   late SharedPreferences prefs;
-  List likedToons = [];
-
-  Future initPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    likedToons = prefs.getStringList('likedToons')!;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initPrefs();
-  }
 
   int _selectedIndex = 1;
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonflix/models/webtoon_episode_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Episode extends StatelessWidget {
+class Episode extends StatefulWidget {
   const Episode({
     super.key,
     required this.episode,
@@ -12,9 +13,28 @@ class Episode extends StatelessWidget {
   final String webtoonId;
   final WebtoonEpisodeModel episode;
 
+  @override
+  State<Episode> createState() => _EpisodeState();
+}
+
+class _EpisodeState extends State<Episode> {
+  late SharedPreferences prefs;
+
   onButtonTap() async {
+    prefs = await SharedPreferences.getInstance();
+    final recentToons = prefs.getStringList('recentToons');
+    if (recentToons != null) {
+      String recentToon = "${widget.webtoonId}/${widget.episode.title}";
+      print(recentToon);
+      if (recentToon != "") {
+        recentToons.add(recentToon);
+      }
+      await prefs.setStringList('recentToons', recentToons);
+    } else {
+      await prefs.setStringList('recentToons', []);
+    }
     final url = Uri.parse(
-        "https://comic.naver.com/webtoon/detail?titleId=$webtoonId&no=${episode.id}");
+        "https://comic.naver.com/webtoon/detail?titleId=${widget.webtoonId}&no=${widget.episode.id}");
     await launchUrl(url);
     // await launchUrlString("https://google.com");
   }
@@ -56,7 +76,7 @@ class Episode extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Image.network(
-                  episode.thumb,
+                  widget.episode.thumb,
                   headers: const {
                     "User-Agent":
                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
@@ -69,7 +89,7 @@ class Episode extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(episode.title,
+                  Text(widget.episode.title,
                       style: const TextStyle(
                         fontSize: 16,
                       )),
@@ -86,7 +106,7 @@ class Episode extends StatelessWidget {
                       const SizedBox(
                         width: 2,
                       ),
-                      Text(episode.rating,
+                      Text(widget.episode.rating,
                           style: const TextStyle(
                             fontSize: 11,
                             color: Colors.red,
@@ -94,7 +114,7 @@ class Episode extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(episode.date,
+                      Text(widget.episode.date,
                           style: const TextStyle(
                             fontSize: 11,
                           )),
