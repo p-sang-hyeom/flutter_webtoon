@@ -129,6 +129,7 @@ class _RecentScreenState extends State<RecentScreen> {
   }
 
   ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+    print(recentToons);
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: snapshot.data!.length,
@@ -142,7 +143,8 @@ class _RecentScreenState extends State<RecentScreen> {
               title: webtoon.title,
               thumb: webtoon.thumb,
               id: webtoon.id,
-              subtitle: list[1],
+              subtitle: list[2],
+              episode: list[1],
             );
           }
         }

@@ -24,8 +24,12 @@ class _EpisodeState extends State<Episode> {
     prefs = await SharedPreferences.getInstance();
     final recentToons = prefs.getStringList('recentToons');
     if (recentToons != null) {
-      String recentToon = "${widget.webtoonId}/${widget.episode.title}";
-      print(recentToon);
+      String recentToon =
+          "${widget.webtoonId}/${widget.episode.id}/${widget.episode.title}";
+
+      recentToons
+          .removeWhere((item) => item.startsWith('${widget.webtoonId}/'));
+
       if (recentToon != "") {
         recentToons.add(recentToon);
       }

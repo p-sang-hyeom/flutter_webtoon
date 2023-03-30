@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Recent extends StatelessWidget {
-  final String title, thumb, id, subtitle;
+  final String title, thumb, id, subtitle, episode;
 
   const Recent({
     super.key,
@@ -10,12 +10,13 @@ class Recent extends StatelessWidget {
     required this.thumb,
     required this.id,
     required this.subtitle,
+    required this.episode,
   });
 
   onEpisodeClick() async {
-    // final url = Uri.parse(
-    //     "https://comic.naver.com/webtoon/detail?titleId=${widget.webtoonId}&no=${widget.episode.id}");
-    final url = Uri.parse("https://comic.naver.com/webtoon/detail?titleId=$id");
+    final url = Uri.parse(
+        "https://comic.naver.com/webtoon/detail?titleId=$id&no=$episode");
+
     await launchUrl(url);
     // await launchUrlString("https://google.com");
   }
