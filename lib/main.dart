@@ -2,15 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:toonflix/screens/home_screen.dart';
 import 'package:toonflix/screens/liked_screen.dart';
 import 'package:toonflix/screens/recent_screen.dart';
-import 'package:toonflix/services/api_services.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 void main() {
-  ApiService.getKeymediMainContent();
   runApp(const App());
 }
 
 class App extends StatelessWidget {
   const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: '미소숯불닭갈비',
+      home: AnimatedSplashScreen(
+        splash: Image.asset('Assets/image/Keybase.png'),
+        nextScreen: const AppScreen(),
+        splashTransition: SplashTransition.fadeTransition,
+      ),
+    );
+  }
+}
+
+class AppScreen extends StatelessWidget {
+  const AppScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
